@@ -22,7 +22,6 @@ type App struct {
 }
 
 func main() {
-	utils.InitLoadEnv()
 	config := config.New()
 
 	app := App{

@@ -7,13 +7,14 @@ import (
 	"github.com/eggysetiawan/fiber-starterkit/errs"
 	"github.com/eggysetiawan/fiber-starterkit/internal/domain"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jmoiron/sqlx"
 )
 
 type MachineRepositoryDb struct {
-	client *sql.DB
+	client *sqlx.DB
 }
 
-func NewMachineRepositoryDb(db *sql.DB) *MachineRepositoryDb {
+func NewMachineRepositoryDb(db *sqlx.DB) *MachineRepositoryDb {
 	return &MachineRepositoryDb{db}
 }
 

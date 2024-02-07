@@ -1,13 +1,13 @@
 package config
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jameskeane/bcrypt"
+	"github.com/jmoiron/sqlx"
 	"github.com/spf13/viper"
 )
 
@@ -87,7 +87,7 @@ func (config *Config) SetErrorHandler(errorHandler fiber.ErrorHandler) {
 	config.errorHandler = errorHandler
 }
 
-func (config *Config) ConnectDB() (db *sql.DB, err error) {
+func (config *Config) ConnectDB() (db *sqlx.DB, err error) {
 
 	dbDriver := config.GetString("DB_CONNECTION")
 	dbHost := config.GetString("DB_HOST")
@@ -108,7 +108,7 @@ func (config *Config) ConnectDB() (db *sql.DB, err error) {
 	}
 	dsn := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?timeout=" + dbTimeout + "s"
 
-	db, err = sql.Open(dbDriver, dsn)
+	db, err = sqlx.Open(dbDriver, dsn)
 	if err != nil {
 		return nil, err
 	}
@@ -126,19 +126,19 @@ func (config *Config) setDefaults() {
 	config.SetDefault("APP_ENV", config.GetString("APP_ENV"))
 
 	// Set default database configuration
-	config.SetDefault("DB_CONNECTION", os.Getenv("DB_CONNECTION"))
-	config.SetDefault("DB_HOST", os.Getenv("DB_HOST"))
-	config.SetDefault("DB_USERNAME", os.Getenv("DB_USERNAME"))
-	config.SetDefault("DB_PASSWORD", os.Getenv("DB_PASSWORD"))
-	config.SetDefault("DB_PORT", os.Getenv("DB_PORT"))
-	config.SetDefault("DB_DATABASE", os.Getenv("DB_DATABASE"))
-	config.SetDefault("DB_MAX_CONN", os.Getenv("DB_MAX_CONN"))
-	config.SetDefault("DB_TIMEOUT", os.Getenv("DB_TIMEOUT"))
-	config.SetDefault("DB_MAX_IDLE_CONN", os.Getenv("DB_MAX_IDLE_CONN"))
-	config.SetDefault("NFS_DAYS", os.Getenv("NFS_DAYS"))
-	config.SetDefault("EJOL_DIRECTORY_LOG", os.Getenv("EJOL_DIRECTORY_LOG"))
-	config.SetDefault("SERVICE_LOG", os.Getenv("SERVICE_LOG"))
-	config.SetDefault("EJLOG_DIRECTORY", os.Getenv("EJLOG_DIRECTORY"))
+	config.SetDefault("DB_CONNECTION", config.GetString("DB_CONNECTION"))
+	config.SetDefault("DB_HOST", config.GetString("DB_HOST"))
+	config.SetDefault("DB_USERNAME", config.GetString("DB_USERNAME"))
+	config.SetDefault("DB_PASSWORD", config.GetString("DB_PASSWORD"))
+	config.SetDefault("DB_PORT", config.GetString("DB_PORT"))
+	config.SetDefault("DB_DATABASE", config.GetString("DB_DATABASE"))
+	config.SetDefault("DB_MAX_CONN", config.GetString("DB_MAX_CONN"))
+	config.SetDefault("DB_TIMEOUT", config.GetString("DB_TIMEOUT"))
+	config.SetDefault("DB_MAX_IDLE_CONN", config.GetString("DB_MAX_IDLE_CONN"))
+	config.SetDefault("NFS_DAYS", config.GetString("NFS_DAYS"))
+	config.SetDefault("EJOL_DIRECTORY_LOG", config.GetString("EJOL_DIRECTORY_LOG"))
+	config.SetDefault("SERVICE_LOG", config.GetString("SERVICE_LOG"))
+	config.SetDefault("EJLOG_DIRECTORY", config.GetString("EJLOG_DIRECTORY"))
 
 	// Set default hasher configuration
 	config.SetDefault("HASHER_DRIVER", "argon2id")
