@@ -9,10 +9,10 @@ import (
 )
 
 type MachineHandler struct {
-	uc usecases.DefaultMachineUseCase
+	uc usecases.MachineUseCase
 }
 
-func NewMachineHandler(uc usecases.DefaultMachineUseCase) *MachineHandler {
+func NewMachineHandler(uc usecases.MachineUseCase) *MachineHandler {
 	return &MachineHandler{
 		uc: uc,
 	}

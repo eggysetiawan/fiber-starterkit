@@ -17,8 +17,8 @@ type DefaultMachineUseCase struct {
 	repository domain.MachineRepository
 }
 
-func NewMachineUseCase(repository domain.MachineRepository) DefaultMachineUseCase {
-	return DefaultMachineUseCase{repository}
+func NewMachineUseCase(repository domain.MachineRepository) *DefaultMachineUseCase {
+	return &DefaultMachineUseCase{repository}
 }
 
 func (s *DefaultMachineUseCase) GetMachine(id string) (*dto.MachineResponse, *errs.AppError) {
