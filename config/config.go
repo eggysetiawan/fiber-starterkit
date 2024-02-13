@@ -121,6 +121,7 @@ func (config *Config) ConnectDB() (db *sqlx.DB, err error) {
 
 func (config *Config) setDefaults() {
 	// Set default App configuration
+	config.SetDefault("APP_NAME", "fiber")
 	config.SetDefault("APP_URL", config.GetString("APP_URL"))
 	config.SetDefault("SERVER_PORT", config.GetString("SERVER_PORT"))
 	config.SetDefault("APP_ENV", config.GetString("APP_ENV"))
