@@ -4,17 +4,16 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/eggysetiawan/fiber-starterkit/config"
 	"github.com/eggysetiawan/fiber-starterkit/internal/domain"
 	"github.com/eggysetiawan/fiber-starterkit/internal/handlers"
 	"github.com/eggysetiawan/fiber-starterkit/internal/repository"
 	"github.com/eggysetiawan/fiber-starterkit/internal/usecases"
+	"github.com/eggysetiawan/fiber-starterkit/logger"
 	"github.com/eggysetiawan/fiber-starterkit/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 type App struct {
@@ -28,16 +27,6 @@ func main() {
 		App: fiber.New(*config.GetFiberConfig()),
 	}
 
-	// logger
-	file, logErr := utils.NewLogFile()
-
-	if logErr != nil {
-		fmt.Println("failed to init logger", logErr.Message)
-		return
-	}
-
-	defer file.Close()
-
 	app.Use(basicauth.New(basicauth.Config{
 		Users: map[string]string{
 			utils.User: utils.Pwd,
@@ -45,15 +34,7 @@ func main() {
 		Unauthorized: func(c *fiber.Ctx) error {
 			return domain.NewUnauthorizedResponse(c)
 		},
-	}),
-		logger.New(logger.Config{
-			Format:       "${pid} ${time} ${method} ${path} ${body} ${status} ${latency}\n",
-			TimeFormat:   time.DateTime,
-			TimeZone:     "Asia/Jakarta",
-			TimeInterval: 500 * time.Millisecond,
-			Output:       file,
-		}),
-	)
+	}))
 
 	// Initialize Database
 	db, err := config.ConnectDB()
@@ -76,6 +57,10 @@ func main() {
 		<-c
 		app.exit()
 	}()
+
+	if os.Args[1] == "tester" {
+		logger.Info("hey ini hanya tester")
+	}
 
 	// Start the server
 	err = app.Listen(config.GetString("SERVER_PORT"))

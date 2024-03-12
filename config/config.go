@@ -9,6 +9,8 @@ import (
 	"github.com/jameskeane/bcrypt"
 	"github.com/jmoiron/sqlx"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Config struct {
@@ -117,6 +119,29 @@ func (config *Config) ConnectDB() (db *sqlx.DB, err error) {
 	db.SetMaxIdleConns(dbMaxIdleConn)
 
 	return db, nil
+}
+
+func (config *Config) NewLogger() *zap.Logger {
+	cfg := zap.NewProductionConfig()
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.TimeKey = "@timestamps"
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig.StacktraceKey = ""
+
+	cfg.EncoderConfig = encoderConfig
+	cfg.OutputPaths = []string{
+		"stdout",
+		"./storage/logs/fiber.log",
+	}
+	cfg.ErrorOutputPaths = []string{"stderr"}
+
+	log, err := cfg.Build(zap.AddCallerSkip(1))
+	if err != nil {
+		panic("zap logger error : " + err.Error())
+	}
+
+	return log
+
 }
 
 func (config *Config) setDefaults() {
