@@ -108,7 +108,7 @@ func (config *Config) ConnectDB() (db *sqlx.DB, err error) {
 	if err != nil {
 		return nil, err
 	}
-	dsn := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?timeout=" + dbTimeout + "s"
+	dsn := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?parseTime=true&loc=Asia%2FJakarta&timeout=" + dbTimeout + "s"
 
 	db, err = sqlx.Open(dbDriver, dsn)
 	if err != nil {
