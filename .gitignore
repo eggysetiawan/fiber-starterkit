@@ -1,3 +1,4 @@
 ejol.code-workspace
 storage/logs/*
 .env
+bin/*
