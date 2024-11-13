@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"strings"
 
 	"github.com/eggysetiawan/fiber-starterkit/config"
 	"github.com/eggysetiawan/fiber-starterkit/internal/domain"
@@ -44,7 +43,7 @@ func main() {
 
 	app.db = db
 
-	if len(app.args) > 0 {
+	if len(app.args) > 1 {
 		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 		defer fmt.Println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 		app.console()
@@ -62,10 +61,9 @@ func main() {
 
 	api := app.Group("/api")
 
-	// example machines
-	machines := api.Group("/machines")
-	mh := handlers.NewMachineHandler(usecases.NewMachineUseCase(repository.NewMachineRepositoryDb(db)))
-	machines.Post("/findBy", mh.ShowMachine)
+	bdh := handlers.NewBigDataHandler(*usecases.NewDefaultBigDataUseCase(repository.NewBigDataRepositoryAPI()))
+	bigData := api.Group("/bigdata")
+	bigData.Post("/getPostalCodes", bdh.GetPostalCode)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -86,14 +84,12 @@ func (app *App) exit() {
 }
 
 func (app *App) console() {
-	fmt.Println(app.args)
-	switch app.args[1] {
+	switch app.args[2] {
 	case "cmd":
 		logger.Info("after fix 2")
-
+	case "version":
+		logger.Info("Version 1.0")
 	default:
-		s := strings.Split(config.AppConfig.GetString("ELASTIC_HOST"), ",")
-		fmt.Println(s)
 	}
 
 }

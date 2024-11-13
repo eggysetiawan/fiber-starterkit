@@ -46,6 +46,15 @@ func NewUnauthorizedResponse(c *fiber.Ctx) error {
 	})
 }
 
+func NewTimeoutResponse(c *fiber.Ctx) error {
+	c.SendStatus(fiber.StatusRequestTimeout)
+	return c.JSON(WebResponse{
+		Message: "Request too long. got timeout!",
+		Code:    fiber.StatusRequestTimeout,
+		Data:    []string{},
+	})
+}
+
 type ResponseError struct {
 	Message string      `json:"message"`
 	Code    int         `json:"code"`

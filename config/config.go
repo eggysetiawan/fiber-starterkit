@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jameskeane/bcrypt"
 	"github.com/jmoiron/sqlx"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -131,7 +133,7 @@ func (config *Config) NewLogger() *zap.Logger {
 	cfg.EncoderConfig = encoderConfig
 	cfg.OutputPaths = []string{
 		"stdout",
-		"./storage/logs/fiber.log",
+		fmt.Sprintf("./storage/logs/%s.log", config.GetString("APP_NAME")),
 	}
 	cfg.ErrorOutputPaths = []string{"stderr"}
 
@@ -161,10 +163,13 @@ func (config *Config) setDefaults() {
 	config.SetDefault("DB_MAX_CONN", config.GetString("DB_MAX_CONN"))
 	config.SetDefault("DB_TIMEOUT", config.GetString("DB_TIMEOUT"))
 	config.SetDefault("DB_MAX_IDLE_CONN", config.GetString("DB_MAX_IDLE_CONN"))
-	config.SetDefault("NFS_DAYS", config.GetString("NFS_DAYS"))
-	config.SetDefault("EJOL_DIRECTORY_LOG", config.GetString("EJOL_DIRECTORY_LOG"))
-	config.SetDefault("SERVICE_LOG", config.GetString("SERVICE_LOG"))
-	config.SetDefault("EJLOG_DIRECTORY", config.GetString("EJLOG_DIRECTORY"))
+
+	// sidney
+	config.SetDefault("BRIGATE_BASIC_USER", "edm")
+	config.SetDefault("BRIGATE_BASIC_PASS", "edmP@ssw0rd")
+
+	config.SetDefault("BRIGATE_BASE_URL", "http://api.close.dev.bri.co.id:5557")
+	config.SetDefault("BRIGATE_TIMEOUT_SECOND", 10)
 
 	// Set default hasher configuration
 	config.SetDefault("HASHER_DRIVER", "argon2id")
@@ -337,4 +342,20 @@ func (config *Config) setFiberConfig() {
 
 func (config *Config) GetFiberConfig() *fiber.Config {
 	return config.fiber
+}
+
+func (config *Config) ConnectRedis() (*redis.Client, error) {
+	addr := fmt.Sprintf("%s:%s", config.GetString("REDIS_HOST"), config.GetString("REDIS_PORT"))
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     addr,
+		Password: config.GetString("REDIS_PASSWORD"), // no password set
+		DB:       4,                                  // use default DB
+	})
+	_, err := rdb.Ping(context.Background()).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	return rdb, nil
 }

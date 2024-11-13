@@ -3,13 +3,14 @@ module github.com/eggysetiawan/fiber-starterkit
 go 1.21.1
 
 require (
+	github.com/elastic/go-elasticsearch v0.0.0
 	github.com/go-sql-driver/mysql v1.7.1
-	github.com/gofiber/contrib/fiberzap/v2 v2.1.2
 	github.com/gofiber/fiber/v2 v2.52.2
 	github.com/gofiber/swagger v0.1.14
 	github.com/jameskeane/bcrypt v0.0.0-20120420032655-c3cd44c1e20f
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1
+	github.com/redis/go-redis/v9 v9.7.0
 	github.com/spf13/viper v1.17.0
 	go.uber.org/zap v1.27.0
 )
@@ -17,7 +18,8 @@ require (
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
-	github.com/elastic/go-elasticsearch v0.0.0 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
