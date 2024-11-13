@@ -23,7 +23,11 @@ RUN go get && go mod tidy
 
 
 # ENTRYPOINT ["/app/main"]
+<<<<<<< HEAD
 EXPOSE 5500
+=======
+EXPOSE 9000
+>>>>>>> bb9c8ca9d35d4d61eaffd6012850efcf47de3920
 
 ENV TZ=Asia/Jakarta
 
